@@ -1,35 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import "./App.css";
+import Header from "./components/Header";
+import { getContacts } from "./api/ContactService";
+import ContactList from "./components/ContactList";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [data, setData] = useState({ content: [], totalPages: 0 });
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const getAllContacts = async (page = 0, size = 10) => {
+    try {
+      setCurrentPage(page);
+      const { data } = await getContacts(page, size);
+      setData(data);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getAllContacts();
+  }, []);
+
+  const toggleModal = (isOpen) => {};
+  console.log("App component rendered");
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Header toggleModal={toggleModal} numberOfContacts={data.totalElements} />
+      <main className="main">
+        <div className="container">
+          <Routes>
+            <Route path="/" element={<Navigate to={"/contacts"} />} />
+            <Route
+              path="/contacts"
+              element={
+                <ContactList
+                  data={data}
+                  currentPage={currentPage}
+                  getAllContacts={getAllContacts}
+                />
+              }
+            />
+          </Routes>
+        </div>
+      </main>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
