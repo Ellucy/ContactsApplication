@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 import Contact from "./Contact";
 
 const ContactList = ({ data, currentPage, getAllContacts }) => {
-  console.log(currentPage);
-  console.log("content data" + data);
   return (
     <main className="main">
       {data?.content?.length === 0 && (

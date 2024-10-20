@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const Contact = ({ contact }) => {
-  console.log("HERE" + contact);
   return (
     <Link to={`/contacts/${contact.id}`} className="contact__item">
       <div className="contact__header">
